@@ -2,12 +2,12 @@
 
 ## Usage
 
-	interactive-rename.py <files>
+	./interactive-rename.py <files>
 
 ## Description
 
-The program invokes the text editor of choice and populate it with filenames to
-be modified. Just change the filenames in the editor, save, and exit. The
+The program invokes the text editor of choice and populates it with filenames
+to be modified. Just change the filenames in the editor, save, and exit. The
 renames will be reflected on the filesystem.
 
 ## Editor Settings
