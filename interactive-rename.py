@@ -17,6 +17,9 @@ def get_editor_command(file):
     return cmd + [file]
 
 def rename_file(orig_name, new_name):
+    if os.path.exists(new_name):
+        print("RENAME FAILED: destination already exists: %1s" % (new_name))
+        return False
     try:
         os.rename(orig_name, new_name)
         print("%1s -> %2s" % (orig_name, new_name))
