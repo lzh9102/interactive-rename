@@ -41,12 +41,49 @@ def generate_tasklist(orig_files, dest_files):
             tasklist.append((orig_files[i], dest_files[i]))
     return tasklist
 
+def sort_tasklist(tasklist):
+    """ Topological-sort the tasklist. This function assumes that
+        there are no duplicates in the source filenames as well as the
+        destination filenames. Returns the sorted tasklist.
+    """
+    source_dict = {}
+    dest_dict = {}
+    visited = {}
+    # create lookup table
+    for index, task in enumerate(tasklist):
+        source_dict[task[0]] = index
+        dest_dict[task[1]] = index
+        visited[index] = False
+
+    sorted_order = []
+
+    # dfs
+    for index, task in enumerate(tasklist):
+        if visited[index]:
+            continue
+        st = [index]
+        while st:
+            tid = st[-1] # get the last item in the list
+            if not visited[tid]: # enter node
+                visited[tid] = True
+                dest = tasklist[tid][1]
+                if dest in source_dict:
+                    # tasklist[tid] depends on another task
+                    st.append(source_dict[dest]) # push the dependency onto stack
+            else: # leave node
+                st.pop()
+                sorted_order.append(tasklist[tid])
+
+    return sorted_order
+
+
 def process_tasklist(tasklist):
     """ Rename files according to the tasklist.
         Returns the number of successful renames.
     """
+    sorted_tasklist = sort_tasklist(tasklist)
     rename_count = 0
-    for task in tasklist:
+    for task in sorted_tasklist:
         if rename_file(task[0], task[1]):
             rename_count += 1
     return rename_count
