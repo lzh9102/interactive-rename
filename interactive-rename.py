@@ -1,18 +1,20 @@
 #!/usr/bin/env python
 # Rename files with your favorite text editor
 
-DEFAULT_EDITOR="vim"
+DEFAULT_EDITOR_COMMAND=["vim"]
 
 import sys, os
 import argparse
 import tempfile
 import subprocess
 
-def get_editor():
+def get_editor_command(file):
     EDITOR = os.getenv("EDITOR")
     if EDITOR == None:
-        EDITOR = DEFAULT_EDITOR
-    return EDITOR
+        cmd = DEFAULT_EDITOR_COMMAND
+    else:
+        cmd = [EDITOR]
+    return cmd + [file]
 
 def rename_file(orig_name, new_name):
     try:
@@ -35,7 +37,7 @@ def rename_files(orig_files):
                 fout.write(f + "\n")
 
         # invoke the editor
-        subprocess.call([get_editor(), fpath])
+        subprocess.call(get_editor_command(fpath))
 
         # read the file back
         with open(fpath, "r") as fin:
