@@ -9,6 +9,7 @@ import tempfile
 import subprocess
 
 def get_editor_command(file):
+    """ Return the command list to invoke the editor of choice. """
     EDITOR = os.getenv("EDITOR")
     if EDITOR == None:
         cmd = DEFAULT_EDITOR_COMMAND
@@ -17,6 +18,9 @@ def get_editor_command(file):
     return cmd + [file]
 
 def rename_file(orig_name, new_name):
+    """ Rename orig_name to new_name and print the results.
+        Returns true if the rename succeeds, false otherwise.
+    """
     if os.path.exists(new_name):
         print("RENAME FAILED: destination already exists: %1s" % (new_name))
         return False
@@ -24,11 +28,15 @@ def rename_file(orig_name, new_name):
         os.rename(orig_name, new_name)
         print("%1s -> %2s" % (orig_name, new_name))
         return True
-    except OSError as e:
-        print("RENAME FAILED: %1s: %2s" % (orig_name, e.strerror))
+    except Exception as e:
+        print("RENAME FAILED: %1s -> %2s: %2s"
+              % (orig_name, new_name, e.strerror))
         return False
 
 def rename_files(orig_files):
+    """ Write filenames in orig_files to a file, invoke the editor, and rename
+        the files when the editor exits.
+    """
     fd = -1
     try:
         # create temporary file
@@ -62,12 +70,10 @@ def rename_files(orig_files):
             print("renamed %1d files" % (rename_count))
     except Exception as e:
         print("ERROR: %1s" % (e.strerror))
-        pass
     finally:
-        os.close(fd)
-        os.remove(fpath)
-        pass
-
+        if fd >= 0:
+            os.close(fd)
+            os.remove(fpath)
     return 0
 
 if __name__ == "__main__":
