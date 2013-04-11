@@ -22,7 +22,7 @@ def rename_file(orig_name, new_name):
         print("%1s -> %2s" % (orig_name, new_name))
         return True
     except OSError as e:
-        print("RENAME FAILED: %1s" % (e.strerror))
+        print("RENAME FAILED: %1s: %2s" % (orig_name, e.strerror))
         return False
 
 def rename_files(orig_files):
