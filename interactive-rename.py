@@ -33,6 +33,24 @@ def rename_file(orig_name, new_name):
               % (orig_name, new_name, e.strerror))
         return False
 
+def generate_tasklist(orig_files, dest_files):
+    """ Generate a list containing tuples consisting of (src,dest) pairs. """
+    tasklist = []
+    for i in range(0, len(orig_files)):
+        if orig_files[i] != dest_files[i]:
+            tasklist.append((orig_files[i], dest_files[i]))
+    return tasklist
+
+def process_tasklist(tasklist):
+    """ Rename files according to the tasklist.
+        Returns the number of successful renames.
+    """
+    rename_count = 0
+    for task in tasklist:
+        if rename_file(task[0], task[1]):
+            rename_count += 1
+    return rename_count
+
 def rename_files(orig_files):
     """ Write filenames in orig_files to a file, invoke the editor, and rename
         the files when the editor exits.
@@ -59,11 +77,11 @@ def rename_files(orig_files):
         if len(files) != len(orig_files):
             print("ERROR: file count mismatch")
             return 1
-        rename_count = 0
-        for i in range(0, len(files)):
-            if orig_files[i] != files[i]:
-                if rename_file(orig_files[i], files[i]):
-                    rename_count += 1 # succeed
+
+        # rename files
+        tasklist = generate_tasklist(orig_files, files)
+        rename_count = process_tasklist(tasklist)
+
         if rename_count == 0:
             print("nothing renamed")
         else:
