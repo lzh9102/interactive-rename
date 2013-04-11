@@ -46,7 +46,7 @@ def rename_files(orig_files):
 
         # validate input
         if len(files) != len(orig_files):
-            print("error: file count mismatch")
+            print("ERROR: file count mismatch")
             return 1
         rename_count = 0
         for i in range(0, len(files)):
