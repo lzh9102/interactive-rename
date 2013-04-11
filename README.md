@@ -1,6 +1,10 @@
 # Interactive Rename
 
-Rename files with your favorite text editor.
+## Description
+
+The program invokes the text editor of choice and populate it with filenames to
+be modified. Just change the filenames in the editor, save, and exit. The
+renames will be reflected on the filesystem.
 
 ## Usage
 
