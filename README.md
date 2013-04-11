@@ -20,3 +20,12 @@ favorite editor. Besides the editor name, additional parameters can be added to
 change the line to something like this:
 
 	DEFAULT_EDITOR_COMMAND = ["emacs", "-nw"]
+
+Note that the the editor command must block until editing is complete, or the
+rename will not work. One such example is the `gvim` command, which forks a new
+process and return immediately.
+
+If you are using gvim, please add the `-f` flag so that it will behave like a
+blocking command:
+
+	DEFAULT_EDITOR_COMMAND = ["gvim", "-f"]
