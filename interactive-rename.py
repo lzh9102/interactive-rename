@@ -47,18 +47,16 @@ def sort_tasklist(tasklist):
         destination filenames. Returns the sorted tasklist.
     """
     source_dict = {}
-    dest_dict = {}
     visited = {}
     # create lookup table
     for index, task in enumerate(tasklist):
         source_dict[task[0]] = index
-        dest_dict[task[1]] = index
         visited[index] = False
 
     sorted_order = []
 
     # dfs
-    for index, task in enumerate(tasklist):
+    for index, _ in enumerate(tasklist):
         if visited[index]:
             continue
         st = [index]
