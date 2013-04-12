@@ -58,7 +58,8 @@ def generate_temp_target(filename):
     """ Generate a temporary rename target for filename.
         For example: ./test -> ./test.ren.735402.tmp
     """
-    return "%1s.ren.%2d%3d.tmp" % (filename, random.randrange(0xffff), os.getpid())
+    return "%1s.ren.%2d%3d.tmp" \
+            % (filename.rstrip(os.pathsep), random.randrange(0xffff), os.getpid())
 
 def sort_tasklist(tasklist):
     """ Topological-sort the tasklist. This function assumes that
