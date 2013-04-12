@@ -1,9 +1,15 @@
 # Interactive Rename
 
+## Description
+
 This utility enables users to rename several files at once easily in a text
-editor. It calculates the dependencies between renaming operations and
-transforms them into a linear order that can be carried out one by one. For
-example, renaming
+editor. It invokes the text editor of choice and populates it with filenames to
+be modified. Just change the filenames in the editor, save, and quit, and the
+renames will be reflected on the filesystem.
+
+The program does more than just renaming each file in the given order. It
+calculates the dependencies between renaming operations and transforms them
+into a linear order that can be carried out one by one. For example, renaming
 
 	file1
 	file2
@@ -38,12 +44,6 @@ For example, swapping names of file1 and file2 will be carried out like this:
 ## Usage
 
 	./interactive-rename.py <files>
-
-## Description
-
-The program invokes the text editor of choice and populates it with filenames
-to be modified. Just change the filenames in the editor, save, and exit, and
-the renames will be reflected on the filesystem.
 
 ## Editor Settings
 
