@@ -41,6 +41,18 @@ def generate_tasklist(orig_files, dest_files):
             tasklist.append((orig_files[i], dest_files[i]))
     return tasklist
 
+def check_duplicate(files):
+    """ Check whether there are duplicates in the file list.
+        Return the first duplicate if found, None if not found.
+    """
+    paths = set()
+    for f in files:
+        abspath = os.path.abspath(f)
+        if abspath in paths:
+            return f
+        paths.add(abspath)
+    return None
+
 def sort_tasklist(tasklist):
     """ Topological-sort the tasklist. This function assumes that
         there are no duplicates in the source filenames as well as the
@@ -95,6 +107,11 @@ def rename_files(orig_files):
         if not os.path.exists(f):
             print("ERROR: source file doesn't exist: %1s" % (f))
             return 1
+    # check for duplicate files
+    first_duplicate = check_duplicate(orig_files)
+    if first_duplicate:
+        print("ERROR: dupliate file: %1s" % (first_duplicate))
+        return 1
     fd = -1
     try:
         # create temporary file
