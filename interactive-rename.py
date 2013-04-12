@@ -62,7 +62,7 @@ def sort_tasklist(tasklist):
     visited = {}
     # create lookup table
     for index, task in enumerate(tasklist):
-        source_dict[task[0]] = index
+        source_dict[os.path.abspath(task[0])] = index
         visited[index] = False
 
     sorted_order = []
@@ -77,9 +77,9 @@ def sort_tasklist(tasklist):
             if not visited[tid]: # enter node
                 visited[tid] = True
                 dest = tasklist[tid][1]
-                if dest in source_dict:
+                if os.path.exists(dest) and (os.path.abspath(dest) in source_dict):
                     # tasklist[tid] depends on another task
-                    st.append(source_dict[dest]) # push the dependency onto stack
+                    st.append(source_dict[os.path.abspath(dest)]) # push the dependency onto stack
             else: # leave node
                 st.pop()
                 sorted_order.append(tasklist[tid])
