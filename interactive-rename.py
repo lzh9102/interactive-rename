@@ -37,7 +37,7 @@ def generate_tasklist(orig_files, dest_files):
     """ Generate a list containing tuples consisting of (src,dest) pairs. """
     tasklist = []
     for i in range(0, len(orig_files)):
-        if orig_files[i] != dest_files[i]:
+        if os.path.abspath(orig_files[i]) != os.path.abspath(dest_files[i]):
             tasklist.append((orig_files[i], dest_files[i]))
     return tasklist
 
