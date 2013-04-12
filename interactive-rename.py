@@ -92,6 +92,11 @@ def rename_files(orig_files):
     """ Write filenames in orig_files to a file, invoke the editor, and rename
         the files when the editor exits.
     """
+    # check for file existence
+    for f in orig_files:
+        if not os.path.exists(f):
+            print("ERROR: source file doesn't exist: %1s" % (f))
+            return 1
     fd = -1
     try:
         # create temporary file
