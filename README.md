@@ -7,8 +7,8 @@
 ## Description
 
 The program invokes the text editor of choice and populates it with filenames
-to be modified. Just change the filenames in the editor, save, and exit. The
-renames will be reflected on the filesystem.
+to be modified. Just change the filenames in the editor, save, and exit, and
+the renames will be reflected on the filesystem.
 
 ## Editor Settings
 
