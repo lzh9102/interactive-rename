@@ -42,7 +42,7 @@ def generate_tasklist(orig_files, dest_files):
             tasklist.append((orig_files[i], dest_files[i]))
     return tasklist
 
-def check_duplicate(files):
+def check_duplicates(files):
     """ Check whether there are duplicates in the file list.
         Return the first duplicate if found, None if not found.
     """
@@ -131,9 +131,9 @@ def rename_files(orig_files):
             print("ERROR: source file doesn't exist: %1s" % (f))
             return 1
     # check for duplicate files
-    first_duplicate = check_duplicate(orig_files)
+    first_duplicate = check_duplicates(orig_files)
     if first_duplicate:
-        print("ERROR: dupliate file: %1s" % (first_duplicate))
+        print("ERROR: dupliate files: %1s" % (first_duplicate))
         return 1
     fd = -1
     try:
@@ -158,6 +158,12 @@ def rename_files(orig_files):
         # validate input
         if len(files) != len(orig_files):
             print("ERROR: file count mismatch")
+            return 1
+
+        # check for duplicate destinations
+        first_duplicate = check_duplicates(files)
+        if first_duplicate:
+            print("ERROR: duplicate destination files: %1s" % (first_duplicate))
             return 1
 
         # rename files
