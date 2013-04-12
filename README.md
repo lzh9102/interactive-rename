@@ -43,7 +43,13 @@ For example, swapping names of file1 and file2 will be carried out like this:
 
 ## Usage
 
-	./interactive-rename.py <files>
+	interactive-rename.py [-h] [-t] files [files ...]
+
+### Arguments
+- *files*
+	files to be renamed
+- *-t*, *--transaction*
+	undo all operations when an error occurs
 
 ## Editor Settings
 
