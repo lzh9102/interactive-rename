@@ -7,6 +7,7 @@ import sys, os
 import argparse
 import tempfile
 import subprocess
+import random
 
 def get_editor_command(file):
     """ Return the command list to invoke the editor of choice. """
@@ -53,39 +54,59 @@ def check_duplicate(files):
         paths.add(abspath)
     return None
 
+def generate_temp_target(filename):
+    """ Generate a temporary rename target for filename.
+        For example: ./test -> ./test.ren.735402.tmp
+    """
+    return "%1s.ren.%2d%3d.tmp" % (filename, random.randrange(0xffff), os.getpid())
+
 def sort_tasklist(tasklist):
     """ Topological-sort the tasklist. This function assumes that
         there are no duplicates in the source filenames as well as the
         destination filenames. Returns the sorted tasklist.
     """
     source_dict = {}
-    visited = {}
+    visits = {}
     # create lookup table
     for index, task in enumerate(tasklist):
         source_dict[os.path.abspath(task[0])] = index
-        visited[index] = False
+        visits[index] = 0
 
+    post_operation = []
     sorted_order = []
 
     # dfs
     for index, _ in enumerate(tasklist):
-        if visited[index]:
+        if visits[index]:
             continue
         st = [index]
         while st:
             tid = st[-1] # get the last item in the list
-            visited[tid] = True
-            dest = os.path.abspath(tasklist[tid][1])
+            visits[tid] = 1
+            dest = tasklist[tid][1]
+            dest_abs = os.path.abspath(dest)
             has_child = False
-            if dest in source_dict:
-                dep_tid = source_dict[dest]
-                if not visited[dep_tid]:
+            if dest_abs in source_dict:
+                dep_tid = source_dict[dest_abs]
+                if not visits[dep_tid]: # not visited
                     st.append(dep_tid)
                     has_child = True
+                elif visits[dep_tid] == 1: # cycle
+                    # resolve the dependency cycle by replacing (src, dest)
+                    # with (src, src.tmp) and (src.tmp, dest)
+                    src = tasklist[tid][0]
+                    temp_dest = generate_temp_target(dest)
+                    sorted_order.append((src, temp_dest))
+                    post_operation.append((temp_dest, dest))
+                    visits[tid] = 2
+                    st.pop()
+                    continue
             if not has_child: # leave node
+                visits[tid] = 2
                 st.pop()
                 sorted_order.append(tasklist[tid])
 
+    sorted_order += post_operation
     return sorted_order
 
 
