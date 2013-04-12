@@ -74,13 +74,15 @@ def sort_tasklist(tasklist):
         st = [index]
         while st:
             tid = st[-1] # get the last item in the list
-            if not visited[tid]: # enter node
-                visited[tid] = True
-                dest = tasklist[tid][1]
-                if os.path.exists(dest) and (os.path.abspath(dest) in source_dict):
-                    # tasklist[tid] depends on another task
-                    st.append(source_dict[os.path.abspath(dest)]) # push the dependency onto stack
-            else: # leave node
+            visited[tid] = True
+            dest = os.path.abspath(tasklist[tid][1])
+            has_child = False
+            if dest in source_dict:
+                dep_tid = source_dict[dest]
+                if not visited[dep_tid]:
+                    st.append(dep_tid)
+                    has_child = True
+            if not has_child: # leave node
                 st.pop()
                 sorted_order.append(tasklist[tid])
 
