@@ -111,7 +111,7 @@ def sort_tasklist(tasklist):
     return sorted_order
 
 
-def process_tasklist(tasklist):
+def process_tasklist(tasklist, RollBackOnError):
     """ Rename files according to the tasklist.
         Returns the number of successful renames.
     """
@@ -120,9 +120,16 @@ def process_tasklist(tasklist):
     for task in sorted_tasklist:
         if rename_file(task[0], task[1]):
             rename_count += 1
+        elif RollBackOnError:
+            # rollback processed operations in opposite order
+            print("rolling back previous operations")
+            for i in reversed(range(0, rename_count)):
+                task = sorted_tasklist[i]
+                rename_file(task[1], task[0]) # reverse operation
+            return 0
     return rename_count
 
-def rename_files(orig_files):
+def rename_files(orig_files, RollBackOnError):
     """ Write filenames in orig_files to a file, invoke the editor, and rename
         the files when the editor exits.
     """
@@ -169,7 +176,7 @@ def rename_files(orig_files):
 
         # rename files
         tasklist = generate_tasklist(orig_files, files)
-        rename_count = process_tasklist(tasklist)
+        rename_count = process_tasklist(tasklist, RollBackOnError)
 
         if rename_count == 0:
             print("nothing renamed")
@@ -188,9 +195,12 @@ if __name__ == "__main__":
         description="Rename files with your favorite text editor.")
     parser.add_argument('files', type=str, nargs="+",
                       help="files to be renamed")
+    parser.add_argument('-t', '--transaction', action="store_true", default=False,
+                      help="undo all operations when an error occurs")
     args = parser.parse_args()
 
     files = args.files
-    status = rename_files(files)
+    transaction = args.transaction
+    status = rename_files(files, transaction)
     sys.exit(status)
 
