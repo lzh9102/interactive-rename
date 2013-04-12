@@ -128,9 +128,11 @@ def rename_files(orig_files):
         subprocess.call(get_editor_command(fpath))
 
         # read the file back
+        files = []
         with open(fpath, "r") as fin:
-            files = fin.read().splitlines()
-        files = [f for f in files if f != ""] # remove empty lines
+            for line in fin:
+                line = line.strip()
+                files.append(line)
 
         # validate input
         if len(files) != len(orig_files):
