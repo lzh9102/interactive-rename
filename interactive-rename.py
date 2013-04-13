@@ -143,7 +143,8 @@ def rollback_operation(tasklist):
     """ Undo the operations in tasklist """
     print_err("rolling back previous operations")
     reverse_tasklist(tasklist)
-    process_tasklist(tasklist, False)
+    for task in tasklist:
+        rename_file(task[0], task[1])
 
 def process_tasklist(tasklist, RollBackOnError):
     """ Rename files according to the tasklist.
