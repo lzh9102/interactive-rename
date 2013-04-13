@@ -204,10 +204,14 @@ if __name__ == "__main__":
                       help="files to be renamed")
     parser.add_argument('-t', '--transaction', action="store_true", default=False,
                       help="undo all operations when an error occurs")
+    parser.add_argument('-v', '--verbose', action="store_true", default=False,
+                      help="explain what is being done")
     args = parser.parse_args()
 
     files = args.files
     transaction = args.transaction
+    if not args.verbose:
+        print_msg = lambda x: None  # disable printing messages
     status = rename_files(files, transaction)
     sys.exit(status)
 

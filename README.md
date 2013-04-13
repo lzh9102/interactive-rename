@@ -16,6 +16,8 @@ renames will be reflected on the filesystem.
 	files to be renamed
 - *-t*, *--transaction*
 	undo all operations when an error occurs
+- *-v*, *--verbose*
+	explain what is being done
 
 ## Editor Settings
 
