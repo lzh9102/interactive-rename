@@ -37,7 +37,7 @@ def prompt_confirm(prompt):
         ans = input(prompt + " [y/n]: ").upper()
     return ans == "Y"
 
-def rename_file(orig_name, new_name):
+def rename_file(orig_name, new_name, ForceOverwrite=False):
     """ Rename orig_name to new_name and print the results.
         Returns a tuple (status, task):
         status
@@ -45,7 +45,7 @@ def rename_file(orig_name, new_name):
         task
             the task being executed, None if nothing is executed
     """
-    if os.path.exists(new_name):
+    if os.path.exists(new_name) and not ForceOverwrite:
         if not prompt_confirm("%1s: destination exists, overwrite?" % (new_name)):
             return (True, None) # ignore this operation and continue
     try:
@@ -153,7 +153,7 @@ def process_tasklist(tasklist, RollBackOnError):
     task_done = []
     try:
         for task in sorted_tasklist:
-            (success, op) = rename_file(task[0], task[1])
+            (success, op) = rename_file(task[0], task[1], OPT_FORCE)
             if op:
                 task_done.append(op)
             if RollBackOnError and not success:
@@ -231,6 +231,7 @@ def rename_files(orig_files):
 
 OPT_ROLLBACK = False
 OPT_VERBOSE = False
+OPT_FORCE = False
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -241,11 +242,14 @@ if __name__ == "__main__":
                       help="undo all operations when an error occurs")
     parser.add_argument('-v', '--verbose', action="store_true", default=False,
                       help="explain what is being done")
+    parser.add_argument('-f', '--force', action="store_true", default=False,
+                      help="overwrite files without confirmation")
     args = parser.parse_args()
 
     files = args.files
     OPT_ROLLBACK = args.transaction
     OPT_VERBOSE = args.verbose
+    OPT_FORCE = args.force
     if not OPT_VERBOSE:
         print_msg = lambda x: None  # disable printing messages
     status = rename_files(files)

@@ -12,12 +12,14 @@ renames will be reflected on the filesystem.
 	interactive-rename.py [-h] [-t] files [files ...]
 
 ### Arguments
-- *files*
+- **files**
 	files to be renamed
-- *-t*, *--transaction*
+- **-t**, **--transaction**
 	undo all operations when an error occurs
-- *-v*, *--verbose*
+- **-v**, **--verbose**
 	explain what is being done
+- **-f**, **--force**
+	overwrite files without confirmation
 
 ## Editor Settings
 
