@@ -9,11 +9,10 @@ renames will be reflected on the filesystem.
 
 ## Usage
 
-	interactive-rename.py [-h] [-t] files [files ...]
+	interactive-rename.py [-h] [-t] [files [files ...]]
 
 ### Arguments
-- **files**
-	files to be renamed
+
 - **-t**, **--transaction**
 	undo all operations when an error occurs
 - **-v**, **--verbose**

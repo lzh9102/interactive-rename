@@ -230,6 +230,11 @@ def rename_files(orig_files):
             os.remove(fpath)
     return 0
 
+def list_files():
+    """ Returns a list of files in the working directory. """
+    filelist = sorted(os.listdir(os.getcwd()))
+    return filelist
+
 OPT_ROLLBACK = False
 OPT_VERBOSE = False
 OPT_FORCE = False
@@ -237,7 +242,7 @@ OPT_FORCE = False
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Rename files with your favorite text editor.")
-    parser.add_argument('files', type=str, nargs="+",
+    parser.add_argument('files', type=str, nargs="*",
                       help="files to be renamed")
     parser.add_argument('-t', '--transaction', action="store_true", default=False,
                       help="undo all operations when an error occurs")
@@ -253,6 +258,8 @@ if __name__ == "__main__":
     OPT_FORCE = args.force
     if not OPT_VERBOSE:
         print_msg = lambda x: None  # disable printing messages
+    if not files:
+        files = list_files() # if no file is given, list all files in PWD
     status = rename_files(files)
     sys.exit(status)
 
