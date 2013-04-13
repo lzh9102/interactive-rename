@@ -232,7 +232,11 @@ def rename_files(orig_files):
 
 def list_files():
     """ Returns a list of files in the working directory. """
-    filelist = sorted(os.listdir(os.getcwd()))
+    dirlist = sorted(os.listdir(os.getcwd()))
+    filelist = []
+    for f in dirlist:
+        if os.path.exists(f):
+            filelist.append(f)
     return filelist
 
 OPT_ROLLBACK = False
