@@ -39,11 +39,11 @@ def prompt_confirm(prompt):
 
 def rename_file(orig_name, new_name):
     """ Rename orig_name to new_name and print the results.
-        Returns true if the rename succeeds, false otherwise.
+        Returns true if the operation is successful, false otherwise.
     """
     if os.path.exists(new_name):
         if not prompt_confirm("%1s: destination exists, overwrite?" % (new_name)):
-            return False
+            return True # ignore this task and continue
     try:
         os.rename(orig_name, new_name)
         print_msg("%1s -> %2s" % (orig_name, new_name))
@@ -129,24 +129,31 @@ def sort_tasklist(tasklist):
     sorted_order += post_operation
     return sorted_order
 
+def reverse_tasklist(tasklist):
+    """ Reverse the operations in tasklist """
+    tasklist.reverse()
+    for i in range(0, len(tasklist)):
+        tasklist[i] = (tasklist[i][1], tasklist[i][0]) # swap src and dest
+
+def rollback_operation(tasklist):
+    """ Undo the operations in tasklist """
+    print_err("rolling back previous operations")
+    reverse_tasklist(tasklist)
+    process_tasklist(tasklist, False)
 
 def process_tasklist(tasklist, RollBackOnError):
     """ Rename files according to the tasklist.
         Returns the number of successful renames.
     """
     sorted_tasklist = sort_tasklist(tasklist)
-    rename_count = 0
+    task_done = []
     for task in sorted_tasklist:
         if rename_file(task[0], task[1]):
-            rename_count += 1
+            task_done.append(task)
         elif RollBackOnError:
-            # rollback processed operations in opposite order
-            print_err("rolling back previous operations")
-            for i in reversed(range(0, rename_count)):
-                task = sorted_tasklist[i]
-                rename_file(task[1], task[0]) # reverse operation
+            rollback_operation(task_done)
             return 0
-    return rename_count
+    return len(task_done)
 
 def rename_files(orig_files):
     """ Write filenames in orig_files to a file, invoke the editor, and rename
@@ -202,6 +209,7 @@ def rename_files(orig_files):
         else:
             print_msg("renamed %1d files" % (rename_count))
     except Exception as e:
+        print(str(e))
         print_err("ERROR: %1s" % (e.strerror))
     finally:
         if fd >= 0:
