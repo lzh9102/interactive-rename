@@ -39,19 +39,23 @@ def prompt_confirm(prompt):
 
 def rename_file(orig_name, new_name):
     """ Rename orig_name to new_name and print the results.
-        Returns true if the operation is successful, false otherwise.
+        Returns a tuple (status, task):
+        status
+            a boolean value indicating if the operation is considered successful
+        task
+            the task being executed, None if nothing is executed
     """
     if os.path.exists(new_name):
         if not prompt_confirm("%1s: destination exists, overwrite?" % (new_name)):
-            return True # ignore this task and continue
+            return (True, None) # ignore this operation and continue
     try:
         os.rename(orig_name, new_name)
         print_msg("%1s -> %2s" % (orig_name, new_name))
-        return True
+        return (True, (orig_name, new_name))
     except Exception as e:
         print_err("RENAME FAILED: %1s -> %2s: %2s"
               % (orig_name, new_name, e.strerror))
-        return False
+        return (False, None)
 
 def generate_tasklist(orig_files, dest_files):
     """ Generate a list containing tuples consisting of (src,dest) pairs. """
@@ -147,12 +151,20 @@ def process_tasklist(tasklist, RollBackOnError):
     """
     sorted_tasklist = sort_tasklist(tasklist)
     task_done = []
-    for task in sorted_tasklist:
-        if rename_file(task[0], task[1]):
-            task_done.append(task)
-        elif RollBackOnError:
-            rollback_operation(task_done)
-            return 0
+    try:
+        for task in sorted_tasklist:
+            (success, op) = rename_file(task[0], task[1])
+            if op:
+                task_done.append(op)
+            if RollBackOnError and not success:
+                rollback_operation(task_done)
+                return 0
+    except KeyboardInterrupt:
+        # When received keyboard interrupt, undo all operations regardless of
+        # the RollBackOnError option.
+        print_err("\nuser abort")
+        rollback_operation(task_done)
+        return 0
     return len(task_done)
 
 def rename_files(orig_files):
