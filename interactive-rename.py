@@ -9,6 +9,13 @@ import tempfile
 import subprocess
 import random
 
+def print_err(s):
+    sys.stderr.write(s)
+    sys.stderr.write("\n")
+
+def print_msg(s):
+    print(s)
+
 def get_editor_command(file):
     """ Return the command list to invoke the editor of choice. """
     EDITOR = os.getenv("EDITOR")
@@ -23,14 +30,14 @@ def rename_file(orig_name, new_name):
         Returns true if the rename succeeds, false otherwise.
     """
     if os.path.exists(new_name):
-        print("RENAME FAILED: destination already exists: %1s" % (new_name))
+        print_err("RENAME FAILED: destination already exists: %1s" % (new_name))
         return False
     try:
         os.rename(orig_name, new_name)
-        print("%1s -> %2s" % (orig_name, new_name))
+        print_msg("%1s -> %2s" % (orig_name, new_name))
         return True
     except Exception as e:
-        print("RENAME FAILED: %1s -> %2s: %2s"
+        print_err("RENAME FAILED: %1s -> %2s: %2s"
               % (orig_name, new_name, e.strerror))
         return False
 
@@ -122,7 +129,7 @@ def process_tasklist(tasklist, RollBackOnError):
             rename_count += 1
         elif RollBackOnError:
             # rollback processed operations in opposite order
-            print("rolling back previous operations")
+            print_msg("rolling back previous operations")
             for i in reversed(range(0, rename_count)):
                 task = sorted_tasklist[i]
                 rename_file(task[1], task[0]) # reverse operation
@@ -136,12 +143,12 @@ def rename_files(orig_files, RollBackOnError):
     # check for file existence
     for f in orig_files:
         if not os.path.exists(f):
-            print("ERROR: source file doesn't exist: %1s" % (f))
+            print_err("ERROR: source file doesn't exist: %1s" % (f))
             return 1
     # check for duplicate files
     first_duplicate = check_duplicates(orig_files)
     if first_duplicate:
-        print("ERROR: dupliate files: %1s" % (first_duplicate))
+        print_err("ERROR: dupliate files: %1s" % (first_duplicate))
         return 1
     fd = -1
     try:
@@ -165,13 +172,13 @@ def rename_files(orig_files, RollBackOnError):
 
         # validate input
         if len(files) != len(orig_files):
-            print("ERROR: file count mismatch")
+            print_err("ERROR: file count mismatch")
             return 1
 
         # check for duplicate destinations
         first_duplicate = check_duplicates(files)
         if first_duplicate:
-            print("ERROR: duplicate destination files: %1s" % (first_duplicate))
+            print_err("ERROR: duplicate destination files: %1s" % (first_duplicate))
             return 1
 
         # rename files
@@ -179,11 +186,11 @@ def rename_files(orig_files, RollBackOnError):
         rename_count = process_tasklist(tasklist, RollBackOnError)
 
         if rename_count == 0:
-            print("nothing renamed")
+            print_msg("nothing renamed")
         else:
-            print("renamed %1d files" % (rename_count))
+            print_msg("renamed %1d files" % (rename_count))
     except Exception as e:
-        print("ERROR: %1s" % (e.strerror))
+        print_err("ERROR: %1s" % (e.strerror))
     finally:
         if fd >= 0:
             os.close(fd)
