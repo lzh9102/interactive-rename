@@ -9,6 +9,12 @@ import tempfile
 import subprocess
 import random
 
+# use "input" the same way in python 2.x and 3.x
+try:
+    input = raw_input
+except NameError:
+    pass
+
 def print_err(s):
     sys.stderr.write(s)
     sys.stderr.write("\n")
@@ -25,13 +31,19 @@ def get_editor_command(file):
         cmd = [EDITOR]
     return cmd + [file]
 
+def prompt_confirm(prompt):
+    ans = ""
+    while ans != "Y" and ans != "N":
+        ans = input(prompt + " [y/n]: ").upper()
+    return ans == "Y"
+
 def rename_file(orig_name, new_name):
     """ Rename orig_name to new_name and print the results.
         Returns true if the rename succeeds, false otherwise.
     """
     if os.path.exists(new_name):
-        print_err("RENAME FAILED: destination already exists: %1s" % (new_name))
-        return False
+        if not prompt_confirm("%1s: destination exists, overwrite?" % (new_name)):
+            return False
     try:
         os.rename(orig_name, new_name)
         print_msg("%1s -> %2s" % (orig_name, new_name))
