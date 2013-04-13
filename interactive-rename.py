@@ -129,7 +129,7 @@ def process_tasklist(tasklist, RollBackOnError):
             rename_count += 1
         elif RollBackOnError:
             # rollback processed operations in opposite order
-            print_msg("rolling back previous operations")
+            print_err("rolling back previous operations")
             for i in reversed(range(0, rename_count)):
                 task = sorted_tasklist[i]
                 rename_file(task[1], task[0]) # reverse operation
