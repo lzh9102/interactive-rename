@@ -136,7 +136,7 @@ def process_tasklist(tasklist, RollBackOnError):
             return 0
     return rename_count
 
-def rename_files(orig_files, RollBackOnError):
+def rename_files(orig_files):
     """ Write filenames in orig_files to a file, invoke the editor, and rename
         the files when the editor exits.
     """
@@ -183,7 +183,7 @@ def rename_files(orig_files, RollBackOnError):
 
         # rename files
         tasklist = generate_tasklist(orig_files, files)
-        rename_count = process_tasklist(tasklist, RollBackOnError)
+        rename_count = process_tasklist(tasklist, OPT_ROLLBACK)
 
         if rename_count == 0:
             print_msg("nothing renamed")
@@ -197,6 +197,9 @@ def rename_files(orig_files, RollBackOnError):
             os.remove(fpath)
     return 0
 
+OPT_ROLLBACK = False
+OPT_VERBOSE = False
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description="Rename files with your favorite text editor.")
@@ -209,9 +212,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     files = args.files
-    transaction = args.transaction
-    if not args.verbose:
+    OPT_ROLLBACK = args.transaction
+    OPT_VERBOSE = args.verbose
+    if not OPT_VERBOSE:
         print_msg = lambda x: None  # disable printing messages
-    status = rename_files(files, transaction)
+    status = rename_files(files)
     sys.exit(status)
 
