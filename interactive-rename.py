@@ -218,7 +218,7 @@ def rename_files(orig_files):
         rename_count = process_tasklist(tasklist, OPT_ROLLBACK)
 
         if rename_count == 0:
-            print_msg("nothing renamed")
+            print_err("nothing renamed")
         else:
             print_msg("renamed %1d files" % (rename_count))
     except Exception as e:
