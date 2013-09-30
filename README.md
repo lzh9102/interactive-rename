@@ -39,3 +39,11 @@ If you are using gvim, please add the `-f` flag so that it will behave like a
 blocking command:
 
 	DEFAULT_EDITOR_COMMAND = ["gvim", "-f"]
+
+## Copyright
+
+Copyright 2013 Che-Huai Lin
+
+This work is licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
+
+![](http://i.creativecommons.org/l/by/3.0/88x31.png)
