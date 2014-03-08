@@ -29,7 +29,7 @@ favorite editor. Besides the editor name, additional parameters can be added to
 `DEFAULT_EDITOR_COMMAND`. For example, to use emacs in terminal (`emacs -nw`),
 change the line to something like this:
 
-	DEFAULT_EDITOR_COMMAND = ["emacs", "-nw"]
+	DEFAULT_EDITOR_COMMAND = "emacs -nw"
 
 Note that the the editor command must block until editing is complete, or the
 rename will not work. One such example is the `gvim` command, which forks a new
@@ -38,12 +38,10 @@ process and return immediately.
 If you are using gvim, please add the `-f` flag so that it will behave like a
 blocking command:
 
-	DEFAULT_EDITOR_COMMAND = ["gvim", "-f"]
+	DEFAULT_EDITOR_COMMAND = "gvim -f"
 
 ## Copyright
 
 Copyright 2013 Che-Huai Lin
 
-This work is licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0/).
-
-![](http://i.creativecommons.org/l/by/3.0/88x31.png)
+This work is licensed under the [MIT License](http://opensource.org/licenses/MIT).

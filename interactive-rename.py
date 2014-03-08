@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # Rename files with your favorite text editor
 
-DEFAULT_EDITOR_COMMAND=["vim"]
+DEFAULT_EDITOR_COMMAND = "vim"
 
 import sys, os
 import argparse
@@ -26,7 +26,7 @@ def get_editor_command(file):
     """ Return the command list to invoke the editor of choice. """
     EDITOR = os.getenv("EDITOR")
     if EDITOR == None:
-        cmd = DEFAULT_EDITOR_COMMAND
+        cmd = DEFAULT_EDITOR_COMMAND.split()
     else:
         cmd = [EDITOR]
     return cmd + [file]
